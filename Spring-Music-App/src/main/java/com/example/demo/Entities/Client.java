@@ -1,11 +1,13 @@
 package com.example.demo.Entities;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
 @Entity
+@Component
 public class Client extends Users{
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "library_id")
     private Library library;
 
@@ -13,7 +15,7 @@ public class Client extends Users{
         super(username, password);
         setUserType(UserType.CLIENT);
         this.library = new Library(getUsername() + " library");
-        library.getLibraryList().add(new Playlist("1", "defaultPlaylist"));
+        library.getLibraryList().add(new Playlist("defaultPlaylist"));
     }
 
     public Client(){

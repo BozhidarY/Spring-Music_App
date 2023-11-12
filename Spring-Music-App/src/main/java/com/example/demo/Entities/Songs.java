@@ -2,15 +2,16 @@ package com.example.demo.Entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table
 public class Songs {
 
     @Id
     private String name;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "playlist_id")
-    private Playlist playlist;
+//    @ManyToMany(mappedBy = "playlists")
+//    private List<Playlist> playlists;
 
 //    private Artist artist;
     private String artistName;

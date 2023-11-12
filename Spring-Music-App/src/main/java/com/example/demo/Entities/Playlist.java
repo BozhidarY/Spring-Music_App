@@ -1,5 +1,6 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,18 +9,24 @@ import java.util.List;
 @Table(name = "playlist")
 public class Playlist {
     @Id
-    private String playlist_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long playlist_id;
     private String playlistName;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "library_id")
     private Library library;
 
-    @OneToMany(mappedBy = "playlist")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "song_playlist",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "song_id")
+    )
     private List<Songs> songPlaylist;
 
-    public Playlist(String playlist_id, String playlistName) {
-        this.playlist_id = playlist_id;
+    @JsonCreator
+    public Playlist(String playlistName) {
         this.playlistName = playlistName;
         this.songPlaylist = new ArrayList<>();
     }
@@ -42,5 +49,21 @@ public class Playlist {
 
     public void setSongPlaylist(List<Songs> songPlaylist) {
         this.songPlaylist = songPlaylist;
+    }
+
+    public Long getPlaylist_id() {
+        return playlist_id;
+    }
+
+    public void setPlaylist_id(Long playlist_id) {
+        this.playlist_id = playlist_id;
+    }
+
+    public Library getLibrary() {
+        return library;
+    }
+
+    public void setLibrary(Library library) {
+        this.library = library;
     }
 }

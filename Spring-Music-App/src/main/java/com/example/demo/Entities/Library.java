@@ -1,5 +1,7 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 
@@ -13,15 +15,13 @@ public class Library {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_id")
-    private Client client;
-    @OneToMany(mappedBy = "library", fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "library", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Playlist> libraryPlaylists;
 
     private String libraryName;
-
-    public Library(String libraryName) {
+    @JsonCreator
+    public Library(@JsonProperty("libraryName") String libraryName) {
         this.libraryPlaylists = new ArrayList<>();
         this.libraryName = libraryName;
     }
@@ -44,5 +44,21 @@ public class Library {
 
     public void setLibraryName(String libraryName) {
         this.libraryName = libraryName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Playlist> getLibraryPlaylists() {
+        return libraryPlaylists;
+    }
+
+    public void setLibraryPlaylists(List<Playlist> libraryPlaylists) {
+        this.libraryPlaylists = libraryPlaylists;
     }
 }

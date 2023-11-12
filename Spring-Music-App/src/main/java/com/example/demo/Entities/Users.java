@@ -1,13 +1,25 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "userType"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Artist.class, name = "ARTIST"),
+        @JsonSubTypes.Type(value = Client.class, name = "CLIENT")
+})
 @Entity
-@Table(name = "Users") // Define the table name here
+@Table(name = "Users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Users {
 
     @Id
+    @Column(name = "username")
     private String username;
     private String password;
     private UserType userType;

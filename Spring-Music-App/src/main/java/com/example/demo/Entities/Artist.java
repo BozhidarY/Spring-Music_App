@@ -1,8 +1,10 @@
 package com.example.demo.Entities;
 
 import jakarta.persistence.Entity;
+import org.springframework.stereotype.Component;
 
 @Entity
+@Component
 public class Artist extends Users {
     private long totalViews;
 
