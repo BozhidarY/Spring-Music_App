@@ -1,7 +1,6 @@
 package com.example.demo.Entities;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 
@@ -17,12 +16,12 @@ public class Library {
     private Long id;
 
     @OneToMany(mappedBy = "library", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Playlist> libraryPlaylists;
+    private List<Playlist> libraryList;
 
     private String libraryName;
     @JsonCreator
-    public Library(@JsonProperty("libraryName") String libraryName) {
-        this.libraryPlaylists = new ArrayList<>();
+    public Library(String libraryName) {
+        this.libraryList = new ArrayList<>();
         this.libraryName = libraryName;
     }
 
@@ -31,11 +30,11 @@ public class Library {
     }
 
     public List<Playlist> getLibraryList() {
-        return libraryPlaylists;
+        return libraryList;
     }
 
     public void setLibraryList(List<Playlist> libraryList) {
-        this.libraryPlaylists = libraryList;
+        this.libraryList = libraryList;
     }
 
     public String getLibraryName() {
@@ -52,13 +51,5 @@ public class Library {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<Playlist> getLibraryPlaylists() {
-        return libraryPlaylists;
-    }
-
-    public void setLibraryPlaylists(List<Playlist> libraryPlaylists) {
-        this.libraryPlaylists = libraryPlaylists;
     }
 }

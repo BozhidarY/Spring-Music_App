@@ -1,6 +1,7 @@
 package com.example.demo.Entities;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 @Entity

@@ -133,7 +133,7 @@ public class ClientService implements ClientCommands {
             return null;
         } else {
 //            client.getLibrary().getLibraryList().remove(deletedPlaylist);
-//            playlistRepo.deleteById(deletedPlaylist.getPlaylist_id());
+            playlistRepo.deleteById(deletedPlaylist.getPlaylist_id());
             return deletedPlaylist;
         }
     }

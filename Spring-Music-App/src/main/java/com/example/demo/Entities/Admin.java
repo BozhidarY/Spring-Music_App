@@ -9,8 +9,6 @@ public class Admin extends Users {
         setUserType(UserType.ADMIN);
     }
 
-
-
     public static Admin getAdmin() {
         return admin;
     }

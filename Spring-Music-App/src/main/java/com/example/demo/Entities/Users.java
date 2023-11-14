@@ -1,12 +1,13 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
         property = "userType"
 )
 @JsonSubTypes({
@@ -19,16 +20,18 @@ import jakarta.persistence.*;
 public abstract class Users {
 
     @Id
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
+
     private String password;
+
+    @JsonIgnore
     private UserType userType;
 
     public Users(String username, String password) {
         this.username = username;
         this.password = password;
     }
-
 
     public Users() {
     }
@@ -62,7 +65,6 @@ public abstract class Users {
         return "Users{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", userType=" + userType +
                 '}';
     }
 }

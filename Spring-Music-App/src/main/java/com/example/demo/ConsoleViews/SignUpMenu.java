@@ -56,12 +56,11 @@ public class SignUpMenu {
             System.out.println("Username is taken. Try again or go to login(Register/ Login)");
             String choice = scanner.nextLine();
             chooseSignInOption(choice);
-        }else if (signMenuController.validateUserUsername(username) && signMenuController.validateUserPassword(password)) {
+        } else if (signMenuController.validateUserUsername(username) && signMenuController.validateUserPassword(password)) {
             System.out.println("Both username and password dont match the regex. Try again or go to login(Register/ Login)");
             String choice = scanner.nextLine();
             chooseSignInOption(choice);
-        }
-        else if (signMenuController.validateUserUsername(username)) {
+        } else if (signMenuController.validateUserUsername(username)) {
             System.out.println("Username doenst match the regex. Try again or go to login(Register/ Login)");
             String choice = scanner.nextLine();
             chooseSignInOption(choice);
@@ -69,7 +68,7 @@ public class SignUpMenu {
             System.out.println("Password doenst match the regex. Try again or go to login(Register/ Login)");
             String choice = scanner.nextLine();
             chooseSignInOption(choice);
-        }  else {
+        } else {
             System.out.println("Do you want to create Client or Artist account.\n (Client/Artist)");
             String choice = scanner.nextLine();
             switch (choice) {

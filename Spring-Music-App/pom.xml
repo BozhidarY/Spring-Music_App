@@ -55,21 +55,6 @@
 		</dependency>
 	</dependencies>
 
-	<profiles>
-		<profile>
-			<id>console</id>
-			<properties>
-				<exec.mainClass>com.example.demo.Main</exec.mainClass>
-			</properties>
-		</profile>
-		<profile>
-			<id>spring</id>
-			<properties>
-				<exec.mainClass>com.example.demo.DemoApplication</exec.mainClass>
-			</properties>
-		</profile>
-	</profiles>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -80,17 +65,9 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>execution-id</id>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>${exec.mainClass}</mainClass>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<mainClass>com.example.demo.Main</mainClass>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -108,7 +85,20 @@
 		</plugins>
 	</build>
 
-
+	<profiles>
+		<profile>
+			<id>main1</id>
+			<properties>
+				<exec.mainClass>com.example.demo.Main</exec.mainClass>
+			</properties>
+		</profile>
+		<profile>
+			<id>main2</id>
+			<properties>
+				<exec.mainClass>com.example.demo.DemoApplication</exec.mainClass>
+			</properties>
+		</profile>
+	</profiles>
 
 
 </project>

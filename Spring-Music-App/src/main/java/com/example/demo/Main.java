@@ -19,13 +19,12 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         LoadSaveProvider libraryProvider = null;
 
-        if("Gson".equals(dataLibraryChoice)) {
+        String provider = System.getenv("PROV");
+        if("gson".equals(dataLibraryChoice)) {
             libraryProvider = new GsonProvider();
-        }
-        else if("Jackson".equals(dataLibraryChoice)) {
+        } else if("jackson".equals(dataLibraryChoice)) {
             libraryProvider = new JacksonProvider();
-        }
-        else{
+        } else{
             System.out.println("Incorect info");
         }
 

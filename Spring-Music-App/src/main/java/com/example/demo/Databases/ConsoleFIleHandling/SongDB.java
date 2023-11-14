@@ -7,18 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SongDB {
-    private List<Songs> songs;
+    private List<Songs> songsList;
 
     public SongDB() {
-        this.songs = new ArrayList<>();
+        this.songsList = new ArrayList<>();
     }
 
     public List<Songs> getSongsList() {
-        return songs;
+        return songsList;
     }
 
     @Override
     public String toString() {
-        return "{" + songs + "}";
+        return "{" + songsList + "}";
     }
 }

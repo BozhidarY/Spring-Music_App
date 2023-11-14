@@ -15,12 +15,12 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping(path = "/v1")
-public class UserController {
+public class SignUpMenuController {
 
     private final SignMenuService signMenuService;
 
     @Autowired
-    public UserController(SignMenuService signMenuService) {
+    public SignUpMenuController(SignMenuService signMenuService) {
         this.signMenuService = signMenuService;
     }
 
@@ -65,7 +65,7 @@ public class UserController {
 
         Users existingUser = signMenuService.checkIfUserExists(username,password);
         if(existingUser == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         else if(existingUser instanceof Client){
             return signMenuService.openClientCommunication(existingUser);

@@ -43,6 +43,6 @@ public class ArtistController {
         List<ArtistChart> artistCharts = artistList.stream()
                 .map(artist -> new ArtistChart(artist.getUsername(),artist.getTotalViews()))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(artistCharts);
+        return ResponseEntity.status(HttpStatus.OK).body(artistCharts);
     }
 }

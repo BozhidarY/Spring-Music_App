@@ -24,7 +24,7 @@ public class ClientController {
     }
 
     @GetMapping("/users/{username}/clientDashboard/listen")
-    public List<Songs> getMessage(){
+    public List<Songs> getAllSongs(){
         return clientService.getAllSongs();
     }
 
@@ -153,7 +153,7 @@ public class ClientController {
         clientService.setClient(client);
 
         if(!clientService.importLibrary(libraryToImport)){
-            return ResponseEntity.status(HttpStatus.OK).body("No user with that name");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No user with that name");
         }
         else {
             return ResponseEntity.status(HttpStatus.OK).body("Library imported");
