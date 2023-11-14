@@ -1,6 +1,6 @@
 package com.example.demo.ConsoleControllers;
 
-import com.example.demo.Configuration;
+import com.example.demo.Utils.Configuration;
 import com.example.demo.Databases.ConsoleFIleHandling.*;
 import com.example.demo.ConsoleViews.ClientViewInterface;
 import com.example.demo.Entities.*;

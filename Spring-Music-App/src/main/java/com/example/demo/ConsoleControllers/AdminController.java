@@ -1,8 +1,7 @@
 package com.example.demo.ConsoleControllers;
 
 
-import com.example.demo.Configuration;
-import com.example.demo.Databases.ConsoleFIleHandling.GsonProvider;
+import com.example.demo.Utils.Configuration;
 import com.example.demo.Databases.ConsoleFIleHandling.LibraryProviderFactory;
 import com.example.demo.Databases.ConsoleFIleHandling.LoadSaveProvider;
 import com.example.demo.Databases.ConsoleFIleHandling.UserDB;

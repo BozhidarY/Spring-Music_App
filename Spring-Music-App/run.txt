@@ -17,5 +17,10 @@ elif [ $mode == "spring" ]; then
     echo "Running Spring Boot Application..."
     mvn spring-boot:run
 else
-    echo "Invalid or unset app.run.mode. Set it to 'console' or 'spring' in application.properties"
+    echo "Invalid or unset app.run.mode. Please set it to 'console' or 'spring' in application.properties"
 fi
+
+Добро утро :). Мисля, че имам напредък по задачата. Приложението вече може да работи и конзолно и със спринг.
+Може да работи с всички бази данни(json и postgresql). В пропъртис файла може да се избере библиотека, с която да работиш.
+Също така направих bash файл, през който може да избереш как да ръннеш приложението - дали със спринг или
+конзолно. Имам ендпойнти за всички функции. https://github.com/BozhidarY/Spring-Music_App/tree/main/Spring-Music-App

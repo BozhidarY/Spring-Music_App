@@ -4,6 +4,7 @@ import com.example.demo.ConsoleControllers
         .SignMenuController;
 import com.example.demo.Databases.ConsoleFIleHandling.*;
 import com.example.demo.ConsoleViews.SignUpMenu;
+import com.example.demo.Utils.Configuration;
 import com.example.demo.Utils.Constants;
 
 import java.io.IOException;
