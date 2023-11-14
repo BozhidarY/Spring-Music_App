@@ -4,6 +4,7 @@ import com.example.demo.ConsoleControllers.ArtistController;
 import com.example.demo.Entities.Artist;
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,7 +16,7 @@ public class ArtistView {
         this.artistController = artistController;
     }
 
-    public void openArtistCommunication() {
+    public void openArtistCommunication() throws IOException {
 
         System.out.println("Show artist chart?");
         String choice = scanner.nextLine();

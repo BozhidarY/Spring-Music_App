@@ -1,7 +1,14 @@
 package com.example.demo.Entities;
 
-public enum UserType {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum UserType implements GrantedAuthority {
     CLIENT,
     ADMIN,
-    ARTIST
+    ARTIST;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

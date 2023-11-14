@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,15 @@ public class ArtistService implements ArtistCommands {
         this.songRepo = songRepo;
     }
 
-    public Artist getClientByUsername(String username){
+    public HashMap<String, String> showArtistCommands(){
+        HashMap<String, String> functions = new HashMap<>();
+        functions.put("addSong", "Adds a song to the database");
+        functions.put("showArtistChart", "Show most listened artists");
+
+        return functions;
+    }
+
+    public Artist getArtistByUsername(String username){
         return (Artist) userRepository.findByUsername(username);
     }
 

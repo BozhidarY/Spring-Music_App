@@ -31,8 +31,36 @@ public class ClientService implements ClientCommands {
         this.playlistRepo = playlistRepo;
     }
 
+    public HashMap<String, String> showClientCommands(){
+        HashMap<String, String> functions = new HashMap<>();
+        functions.put("listenMenu", "listen songs and have fun");
+        functions.put("editMenu", "manage your library");
+        functions.put("import", "import another user's library");
+
+        return functions;
+    }
+    public HashMap<String, String> showListenFunctions(){
+        HashMap<String, String> functions = new HashMap<>();
+        functions.put("searchSong", "Listen a song by your choice");
+        functions.put("random", "addSong -> listen a random song");
+        functions.put("playlist", "listen a song from your playlist");
+
+        return functions;
+    }
+    public HashMap<String, String> showEditFunctions(){
+        HashMap<String, String> functions = new HashMap<>();
+        functions.put("addSong", "add a song to playlist");
+        functions.put("deleteSong", "delete a song from playlist");
+        functions.put("addPlaylist", "add playlist to your library");
+        functions.put("deletePlaylist", "delete playlist from your library");
+
+        return functions;
+    }
     public Client getClientByUsername(String username){
         return (Client) userRepository.findByUsername(username);
+    }
+    public Songs getSongByName(String name){
+        return songRepo.findSongByName(name);
     }
 
     @Override
@@ -62,21 +90,25 @@ public class ClientService implements ClientCommands {
         return null;
     }
 
-    public Songs getSongByChoiceTest(String songChoice) {
-        for (Songs song : getAllSongs()) {
-            if (song.getName().equals(songChoice)) {
-                return song;
-            }
+    public void changeViewsAfterListeningSong(Songs song){
+        song.setTimesListened(song.getTimesListened() + 1);
+        String artistName = song.getArtistName();
+        Users user = userRepository.findByUsername(artistName);
+        if(user instanceof Artist artist){
+            artist.setTotalViews(artist.getTotalViews() + 1);
+            userRepository.save(artist);
+            songRepo.save(song);
         }
-        return null;
-    }
 
+    }
     @Override
     public Songs getRandomSong() {
         Random random = new Random();
+        if(getAllSongs().isEmpty()){
+            return null;
+        }
         int randomIndex = random.nextInt(getAllSongs().size());
-        Songs currentSong = getAllSongs().get(randomIndex);
-        return currentSong;
+        return getAllSongs().get(randomIndex);
     }
     @Override
     public void changeArtistDataViews() {
@@ -116,7 +148,7 @@ public class ClientService implements ClientCommands {
     public void addPlaylist(String playlistName) {
         Playlist playlist = new Playlist(playlistName);
         client.getLibrary().getLibraryList().add(playlist);
-        playlist.setLibrary(client.getLibrary()); // Set the library for the playlist
+        playlist.setLibrary(client.getLibrary());
         userRepository.save(client);
     }
 
@@ -132,7 +164,6 @@ public class ClientService implements ClientCommands {
         if (deletedPlaylist == null) {
             return null;
         } else {
-//            client.getLibrary().getLibraryList().remove(deletedPlaylist);
             playlistRepo.deleteById(deletedPlaylist.getPlaylist_id());
             return deletedPlaylist;
         }
@@ -140,12 +171,11 @@ public class ClientService implements ClientCommands {
 
     @Override
     public boolean addSong(Playlist playlist, String songName) {
-        for (Songs song : getAllSongs()) {
-            if (song.getName().equals(songName)) {
-                playlist.getSongPlaylist().add(song);
-                playlistRepo.save(playlist);
-                return true;
-            }
+        Songs addSong = songRepo.findSongByName(songName);
+        if (addSong != null) {
+            playlist.getSongPlaylist().add(addSong);
+            playlistRepo.save(playlist);
+            return true;
         }
         return false;
     }
@@ -159,75 +189,23 @@ public class ClientService implements ClientCommands {
                 deletedSongs.add(song);
             }
         }
-        if (deletedSongs.isEmpty()) {
-            return false;
-        } else {
-            System.out.println("Success");
+        if (!deletedSongs.isEmpty()) {
             playlist.getSongPlaylist().removeAll(deletedSongs);
             playlistRepo.save(playlist);
             return true;
-        }
-    }
-
-    @Override
-    public boolean importLibrary(String username) {
-        for (Users user : getAllUsers()) {
-            if (user instanceof Client importClient && user.getUsername().equals(username)) {
-                client.setLibrary(importClient.getLibrary());
-                userRepository.save(client);
-                return true;
-            }
         }
         return false;
     }
 
     @Override
-    public HashMap<String, Integer> favouriteArtist() {
-        HashMap<String, Integer> favouriteArtist = new HashMap<>();
-        for (Users user : getAllUsers()) {
-            if (user instanceof Client client) {
-                for (Playlist playlist : client.getLibrary().getLibraryList()) {
-                    for (Songs song : playlist.getSongPlaylist()) {
-                        favouriteArtist.put(song.getArtistName(), favouriteArtist.getOrDefault(song.getArtistName(), 0) + song.getTimesListened());
-                    }
-                }
-            }
+    public boolean importLibrary(String username) {
+        Users findUser = userRepository.findByUsername(username);
+        if (findUser instanceof Client importClient) {
+            client.setLibrary(importClient.getLibrary());
+            userRepository.save(client);
+            return true;
         }
-        return favouriteArtist;
-
-    }
-
-    public int convertSongDuration(Songs songs) {
-        String[] parts = songs.getDuration().split(":");
-        int duration = Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
-        return duration;
-    }
-
-    public void visualizeRemainingTime(Songs songs, Scanner scanner) {
-        int durationInSeconds = convertSongDuration(songs);
-
-        long startTime = System.currentTimeMillis();
-        long endTime = startTime + (durationInSeconds * 1000L);
-
-        while (System.currentTimeMillis() < endTime) {
-            long remainingTime = (endTime - System.currentTimeMillis()) / 1000;
-            System.out.print("\rTime remaining: " + remainingTime + " seconds");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("\nSong has ended");
-    }
-
-    public void visualizeSongRemainingTime(Songs song) {
-//        songRemainingTime.visualizeRemainingTime(song, scanner);
-        song.setTimesListened(song.getTimesListened() + 1);
-    }
-    public void updateSongDatabase(Songs song){
-        song.setTimesListened(song.getTimesListened() + 1);
-        changeArtistDataViews();
+        return false;
     }
     public Client getClient() {
         return client;
@@ -261,7 +239,6 @@ public class ClientService implements ClientCommands {
         this.libraryRepo = libraryRepo;
 
     }
-
     public PlaylistRepo getPlaylistRepo() {
         return playlistRepo;
     }

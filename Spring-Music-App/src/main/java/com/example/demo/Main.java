@@ -4,29 +4,18 @@ import com.example.demo.ConsoleControllers
         .SignMenuController;
 import com.example.demo.Databases.ConsoleFIleHandling.*;
 import com.example.demo.ConsoleViews.SignUpMenu;
-import com.example.demo.Entities.Constants;
+import com.example.demo.Utils.Constants;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-
-
-        Configuration config = new Configuration("C:\\Users\\b1j2d\\Desktop\\Spring-Music_App\\Spring-Music-App\\src\\main\\resources\\application.properties");
+        Configuration config = new Configuration("src/main/resources/application.properties");
         String dataLibraryChoice = config.getDataLibraryChoice();
+        LoadSaveProvider libraryProvider = LibraryProviderFactory.createLibraryProvider(dataLibraryChoice);
 
         Scanner scanner = new Scanner(System.in);
-        LoadSaveProvider libraryProvider = null;
-
-        String provider = System.getenv("PROV");
-        if("gson".equals(dataLibraryChoice)) {
-            libraryProvider = new GsonProvider();
-        } else if("jackson".equals(dataLibraryChoice)) {
-            libraryProvider = new JacksonProvider();
-        } else{
-            System.out.println("Incorect info");
-        }
 
         SongDB songDB = libraryProvider.loadObject(Constants.SONG_JSON_PATH, SongDB.class );
         UserDB userDB = libraryProvider.loadObject(Constants.USERS_JSON_PATH, UserDB.class);
@@ -42,9 +31,5 @@ public class Main {
             case "Register" -> signUpMenu.register();
             default -> System.out.println("Wrong input");
         }
-
-        libraryProvider.saveObject(Constants.USERS_JSON_PATH, userDB);
-        libraryProvider.saveObject(Constants.DELETEDUSERS_JSON_PATH, deletedUsers);
-        libraryProvider.saveObject(Constants.SONG_JSON_PATH, songDB );
     }
 }

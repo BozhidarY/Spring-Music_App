@@ -1,16 +1,20 @@
 package com.example.demo.DTO;
 
-public class AppUserDTO {
+import com.example.demo.Entities.UserType;
+
+public class RegisterLoginFormDTO {
+
     private String username;
     private String password;
+    private UserType userType;
 
-
-    public AppUserDTO(String username, String password) {
+    public RegisterLoginFormDTO(String username, String password, UserType userType) {
         this.username = username;
         this.password = password;
+        this.userType = userType;
     }
 
-    public AppUserDTO(){
+    public RegisterLoginFormDTO(){
 
     }
 
@@ -30,12 +34,20 @@ public class AppUserDTO {
         this.password = password;
     }
 
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
     @Override
     public String toString() {
-        return "AppUserDTO{" +
-                "username='" + username + '\'' +
+        return "UserDTO{" +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+//                ", userType=" + userType +
                 '}';
     }
 }
-

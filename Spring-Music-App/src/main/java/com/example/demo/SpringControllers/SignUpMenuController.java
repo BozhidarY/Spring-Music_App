@@ -1,103 +1,75 @@
 package com.example.demo.SpringControllers;
 
-import com.example.demo.DTO.ChoiceDTO;
-import com.example.demo.DTO.LoginRegistrationDTO;
+import com.example.demo.DTO.LoginFormDTO;
+import com.example.demo.DTO.LoginResponceDTO;
+import com.example.demo.DTO.RegisterLoginFormDTO;
 import com.example.demo.Entities.Artist;
 import com.example.demo.Entities.Client;
 import com.example.demo.Entities.UserType;
 import com.example.demo.Entities.Users;
-import com.example.demo.SpringService.SignMenuService;
+import com.example.demo.SpringService.SignUpMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
-@RequestMapping(path = "/v1")
+@RequestMapping(path = "/")
 public class SignUpMenuController {
 
-    private final SignMenuService signMenuService;
+    private final SignUpMenuService signUpMenuService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SignUpMenuController(SignMenuService signMenuService) {
-        this.signMenuService = signMenuService;
+    public SignUpMenuController(SignUpMenuService signUpMenuService, PasswordEncoder passwordEncoder) {
+        this.signUpMenuService = signUpMenuService;
+        this.passwordEncoder = passwordEncoder;
     }
 
-//    @GetMapping("/users")
-//    public List<Users> getUsers(){
-//       return userService.getUsers();
-//    }
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterLoginFormDTO registerLoginFormDTO) {
 
-//    @GetMapping("/users/{id}")
-//    public ResponseEntity<Users> getUserByName(@PathVariable("username") String username){
-//        Users users = userService.getUserByUsername(username);
-//        if(users == null){
-//            System.out.println("Error");
-//        }
-//        return new ResponseEntity<Users>(users, HttpStatus.OK);
-//    }
-    @PostMapping("/users/register")
-    public ResponseEntity<?> registerUser(@RequestBody LoginRegistrationDTO loginRegistrationDTO) {
-        String username = loginRegistrationDTO.getUsername();
-        String password = loginRegistrationDTO.getPassword();
-        UserType userType = loginRegistrationDTO.getUserType();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Current user authorities: " + authentication.getAuthorities());
 
-        if(signMenuService.checkDublicateUser(username)){
+        String username = registerLoginFormDTO.getUsername();
+        String password = registerLoginFormDTO.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+        UserType userType = registerLoginFormDTO.getUserType();
+
+        if(signUpMenuService.checkDublicateUser(username) != null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username is taken");
         }
         if(userType == UserType.CLIENT){
-            Users newUser = signMenuService.createClientUser(username, password);
-            return signMenuService.openClientCommunication(newUser);
+            Users newUser = signUpMenuService.createClientUser(username, encodedPassword);
+            return signUpMenuService.openClientCommunication(newUser);
         }
         else if(userType == UserType.ARTIST){
-            Users newUser = signMenuService.createArtistUser(username, password);
-            return signMenuService.openArtistCommunication(newUser);
+            Users newUser = signUpMenuService.createArtistUser(username, encodedPassword);
+            return signUpMenuService.openArtistCommunication(newUser);
         }
-        else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Input");
-        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Input");
     }
-    @PostMapping("/users/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRegistrationDTO loginRegistrationDTO){
-        String username = loginRegistrationDTO.getUsername();
-        String password = loginRegistrationDTO.getPassword();
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody RegisterLoginFormDTO registerLoginFormDTO){
+        String username = registerLoginFormDTO.getUsername();
+        String password = registerLoginFormDTO.getPassword();
 
-        Users existingUser = signMenuService.checkIfUserExists(username,password);
-        if(existingUser == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        else if(existingUser instanceof Client){
-            return signMenuService.openClientCommunication(existingUser);
+        Users existingUser = signUpMenuService.checkIfUserExists(username,password);
+        if(existingUser instanceof Client){
+            return signUpMenuService.openClientCommunication(existingUser);
         }
         else if(existingUser instanceof Artist){
-            return signMenuService.openArtistCommunication(existingUser);
+            return signUpMenuService.openArtistCommunication(existingUser);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
 
-    @PostMapping("/users/{username}/clientDashboard")
-    public ResponseEntity<?> clientDashboard(@PathVariable String username, @RequestBody ChoiceDTO choiceDTO){
-        String choice = choiceDTO.getChoice();
-        RedirectView redirectView = new RedirectView();
-
-        if(choice.equals("Listen")){
-            String dashboardUrl = "/v1/users/" + username + "/clientDashboard/listen";
-            redirectView.setUrl(dashboardUrl);
-            return new ResponseEntity<>(redirectView, HttpStatus.OK);
-        }
-        else if(choice.equals("Random")){
-            String dashboardUrl = "/v1/users/" + username + "/clientDashboard/random";
-            redirectView.setUrl(dashboardUrl);
-            return new ResponseEntity<>(redirectView, HttpStatus.OK);
-        }
-        else if(choice.equals("Playlist")){
-            String dashboardUrl = "/v1/users/" + username + "/clientDashboard/playlist";
-            redirectView.setUrl(dashboardUrl);
-            return new ResponseEntity<>(redirectView, HttpStatus.OK);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input");
-        }
+    @PostMapping("/loginToken")
+    public LoginResponceDTO loginUser(@RequestBody LoginFormDTO loginFormDTO){
+        return signUpMenuService.loginUser(loginFormDTO.getUsername(), loginFormDTO.getPassword());
     }
 }

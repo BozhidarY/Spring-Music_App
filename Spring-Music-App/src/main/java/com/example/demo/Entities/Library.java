@@ -2,6 +2,7 @@ package com.example.demo.Entities;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class Library {
     @OneToMany(mappedBy = "library", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Playlist> libraryList;
 
+    @Column(nullable = false)
+    @NotEmpty(message = "Can not have empty strings")
     private String libraryName;
     @JsonCreator
     public Library(String libraryName) {

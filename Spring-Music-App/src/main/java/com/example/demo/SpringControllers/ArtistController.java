@@ -1,7 +1,7 @@
 package com.example.demo.SpringControllers;
 
-import com.example.demo.DTO.ArtistChart;
-import com.example.demo.DTO.ChoiceDTO;
+import com.example.demo.DTO.ArtistChartBodyDTO;
+import com.example.demo.DTO.NameSearchDTO;
 import com.example.demo.Entities.Artist;
 import com.example.demo.SpringService.ArtistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/v1")
+@RequestMapping(path = "/artist")
 public class ArtistController {
     private final ArtistService artistService;
 
@@ -22,27 +23,30 @@ public class ArtistController {
         this.artistService = artistService;
     }
 
-    @PostMapping("/users/{username}/artistDashboard/addsong")
-    public ResponseEntity<?> listenDialog(@PathVariable String username, @RequestBody ChoiceDTO choiceDTO){
-        String newSongNameChoice = choiceDTO.getChoice();
-        Artist artist = artistService.getClientByUsername(username);
+
+    @GetMapping("/{username}/dashboard")
+    public HashMap<String, String> showArtistCommands(){
+        return artistService.showArtistCommands();
+    }
+    @PostMapping("/{username}/dashboard/addsong")
+    public ResponseEntity<?> listenDialog(@PathVariable String username, @RequestBody NameSearchDTO nameSearchDTO){
+        Artist artist = artistService.getArtistByUsername(username);
         artistService.setArtist(artist);
 
+        String newSongNameChoice = nameSearchDTO.getChoice();
         if(!artistService.checkIfSongExists(newSongNameChoice)){
             artistService.addSongToJsonFile(newSongNameChoice);
             return ResponseEntity.status(HttpStatus.OK).body("Song was added in the database");
         }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This song already exists");
-        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This song already exists");
     }
 
-    @GetMapping("/users/{username}/artistDashboard/showChart")
-    public ResponseEntity<List<ArtistChart>> showChart(){
+    @GetMapping("/{username}/dashboard/showArtistChart")
+    public ResponseEntity<List<ArtistChartBodyDTO>> showChart(){
         List<Artist> artistList = artistService.showMostListenedArtists();
-        List<ArtistChart> artistCharts = artistList.stream()
-                .map(artist -> new ArtistChart(artist.getUsername(),artist.getTotalViews()))
+        List<ArtistChartBodyDTO> artistChartBodyDTOS = artistList.stream()
+                .map(artist -> new ArtistChartBodyDTO(artist.getUsername(),artist.getTotalViews()))
                 .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(artistCharts);
+        return ResponseEntity.status(HttpStatus.OK).body(artistChartBodyDTOS);
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.Entities.Playlist;
 import com.example.demo.Entities.Songs;
 import com.example.demo.Entities.Users;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,21 +19,20 @@ public interface ClientCommands {
 
     Songs getRandomSong();
 
-    void changeArtistDataViews();
+    void changeArtistDataViews() throws IOException;
 
     Playlist searchPlaylistFromLibrary(String playlistChoice);
 
     Songs searchSongInPlaylist(Playlist playlist, String choiceSong);
 
-    void addPlaylist(String playlistName);
+    void addPlaylist(String playlistName) throws IOException;
 
-    Playlist deletePlaylist(String playlistName);
+    Playlist deletePlaylist(String playlistName) throws IOException;
 
-    boolean addSong(Playlist playlist, String songName);
+    boolean addSong(Playlist playlist, String songName) throws IOException;
 
-    boolean deleteSong(Playlist playlist, String songName);
+    boolean deleteSong(Playlist playlist, String songName) throws IOException;
 
-    boolean importLibrary(String username);
+    boolean importLibrary(String username) throws IOException;
 
-    HashMap<String, Integer> favouriteArtist();
 }

@@ -1,12 +1,12 @@
 package com.example.demo.DTO;
 
-import com.example.demo.Entities.ApplicationUser;
+import com.example.demo.Entities.Users;
 
 public class LoginResponceDTO {
-    private ApplicationUser applicationUser;
+    private Users applicationUser;
     private String jwt;
 
-    public LoginResponceDTO(ApplicationUser applicationUser, String jwt){
+    public LoginResponceDTO(Users applicationUser, String jwt){
         super();
         this.applicationUser = applicationUser;
         this.jwt = jwt;
@@ -16,11 +16,11 @@ public class LoginResponceDTO {
         super();
     }
 
-    public ApplicationUser getApplicationUser() {
+    public Users getApplicationUser() {
         return applicationUser;
     }
 
-    public void setApplicationUser(ApplicationUser applicationUser) {
+    public void setApplicationUser(Users applicationUser) {
         this.applicationUser = applicationUser;
     }
 

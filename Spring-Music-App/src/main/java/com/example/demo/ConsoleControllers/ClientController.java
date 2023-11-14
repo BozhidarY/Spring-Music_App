@@ -1,11 +1,13 @@
 package com.example.demo.ConsoleControllers;
 
-import com.example.demo.Databases.ConsoleFIleHandling.SongDB;
-import com.example.demo.Databases.ConsoleFIleHandling.UserDB;
+import com.example.demo.Configuration;
+import com.example.demo.Databases.ConsoleFIleHandling.*;
 import com.example.demo.ConsoleViews.ClientViewInterface;
 import com.example.demo.Entities.*;
 import com.example.demo.Interfaces.ClientCommands;
+import com.example.demo.Utils.Constants;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,10 @@ public class ClientController implements ClientCommands {
     private UserDB userDB;
     private SongDB songDB;
     private ClientViewInterface clientViewInterface;
+
+    Configuration config = new Configuration(Constants.APP_PROPERTIES);
+    String dataLibraryChoice = config.getDataLibraryChoice();
+    LoadSaveProvider libraryProvider = LibraryProviderFactory.createLibraryProvider(dataLibraryChoice);
 
     public ClientController(Client client, UserDB userDB, SongDB songDB) {
         this.client = client;
@@ -61,7 +67,7 @@ public class ClientController implements ClientCommands {
         return currentSong;
     }
     @Override
-    public void changeArtistDataViews() {
+    public void changeArtistDataViews() throws IOException {
         for (Users user : userDB.getUsersList()) {
             if (user instanceof Artist artist) {
                 long counter = 0;
@@ -73,6 +79,7 @@ public class ClientController implements ClientCommands {
                 artist.setTotalViews(counter);
             }
         }
+        libraryProvider.saveObject(Constants.SONG_JSON_PATH, songDB);
     }
     @Override
     public Playlist searchPlaylistFromLibrary(String playlistChoice) {
@@ -93,27 +100,31 @@ public class ClientController implements ClientCommands {
         return null;
     }
     @Override
-    public void addPlaylist(String playlistName) {
+    public void addPlaylist(String playlistName) throws IOException {
         Playlist playlist = new Playlist(playlistName);
         client.getLibrary().getLibraryList().add(playlist);
+        libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
     }
 
     @Override
-    public Playlist deletePlaylist(String playlistName) {
+    public Playlist deletePlaylist(String playlistName) throws IOException {
         Playlist deletedPlaylist = null;
         for (Playlist playlist : client.getLibrary().getLibraryList()) {
             if (playlistName.equals(playlist.getPlaylistName())) {
                 deletedPlaylist = playlist;
             }
         }
+        libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
         return deletedPlaylist;
+
     }
 
     @Override
-    public boolean addSong(Playlist playlist, String songName) {
+    public boolean addSong(Playlist playlist, String songName) throws IOException {
         for (Songs song : songDB.getSongsList()) {
             if (song.getName().equals(songName)) {
                 playlist.getSongPlaylist().add(song);
+                libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
                 return true;
             }
         }
@@ -122,7 +133,7 @@ public class ClientController implements ClientCommands {
 
 
     @Override
-    public boolean deleteSong(Playlist playlist, String songName) {
+    public boolean deleteSong(Playlist playlist, String songName) throws IOException {
         List<Songs> deletedSongs = new ArrayList<>();
         for (Songs song : playlist.getSongPlaylist()) {
             if (song.getName().equals(songName)) {
@@ -134,22 +145,23 @@ public class ClientController implements ClientCommands {
         } else {
             System.out.println("Success");
             playlist.getSongPlaylist().removeAll(deletedSongs);
+            libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
             return true;
         }
     }
 
     @Override
-    public boolean importLibrary(String username) {
+    public boolean importLibrary(String username) throws IOException {
         for (Users user : userDB.getUsersList()) {
             if (user instanceof Client importClient && user.getUsername().equals(username)) {
                 client.setLibrary(importClient.getLibrary());
+                libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
                 return true;
             }
         }
         return false;
     }
 
-    @Override
     public HashMap<String, Integer> favouriteArtist() {
         HashMap<String, Integer> favouriteArtist = new HashMap<>();
         for (Users user : userDB.getUsersList()) {

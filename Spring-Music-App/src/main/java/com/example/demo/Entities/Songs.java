@@ -1,6 +1,7 @@
 package com.example.demo.Entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -9,6 +10,11 @@ import java.util.List;
 public class Songs {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long song_id;
+
+    @Column(unique = true, nullable = false)
+    @NotEmpty(message = "Can not have empty strings")
     private String name;
 //    @ManyToMany(mappedBy = "playlists")
 //    private List<Playlist> playlists;

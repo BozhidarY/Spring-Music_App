@@ -1,18 +1,29 @@
 package com.example.demo.ConsoleControllers;
 
 
+import com.example.demo.Configuration;
+import com.example.demo.Databases.ConsoleFIleHandling.GsonProvider;
+import com.example.demo.Databases.ConsoleFIleHandling.LibraryProviderFactory;
+import com.example.demo.Databases.ConsoleFIleHandling.LoadSaveProvider;
 import com.example.demo.Databases.ConsoleFIleHandling.UserDB;
 import com.example.demo.Entities.Admin;
 import com.example.demo.Entities.Users;
+import com.example.demo.Interfaces.AdminCommands;
+import com.example.demo.Utils.Constants;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminController {
+public class AdminController implements AdminCommands {
     private Admin admin;
     private UserDB userDB;
     private UserDB deletedUsers;
+
+    Configuration config = new Configuration(Constants.APP_PROPERTIES);
+    String dataLibraryChoice = config.getDataLibraryChoice();
+    LoadSaveProvider libraryProvider = LibraryProviderFactory.createLibraryProvider(dataLibraryChoice);
 
     public AdminController(Admin admin, UserDB userDB, UserDB deletedUsers) {
         this.admin = admin;
@@ -39,11 +50,11 @@ public class AdminController {
         return true;
     }
 
-    public boolean deleteUserAccount(String userName) {
+    public boolean deleteUserAccount(String userName, String password) throws IOException {
         List<Users> removedAccounts = new ArrayList<>();
         for (Users user : userDB.getUsersList()) {
             System.out.println(user);
-            if (user.getUsername().equals(userName)) {
+            if (user.getUsername().equals(userName) && user.getPassword().equals("password")) {
                 if (!isDublicateUsername(userName)) {
                     return false;
                 } else {
@@ -53,14 +64,18 @@ public class AdminController {
             }
         }
         userDB.getUsersList().removeAll(removedAccounts);
+        libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
+        libraryProvider.saveObject(Constants.SONG_JSON_PATH, deletedUsers);
         return true;
     }
 
-    public boolean recoverUserAccount(String nameAcc) {
+    public boolean recoverUserAccount(String nameAcc, String password) throws IOException {
         for (Users user : deletedUsers.getUsersList()) {
-            if (nameAcc.equals(user.getUsername()) && isDublicateUsernameDel(nameAcc)) {
+            if (nameAcc.equals(user.getUsername()) && user.getPassword().equals("password") && isDublicateUsernameDel(nameAcc)) {
                 userDB.getUsersList().add(user);
                 deletedUsers.getUsersList().remove(user);
+                libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
+                libraryProvider.saveObject(Constants.SONG_JSON_PATH, deletedUsers);
                 return true;
             }
         }

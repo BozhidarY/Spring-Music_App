@@ -1,22 +1,11 @@
 {
-  "usersList": [
-    {
-      "library": {
-        "libraryList": [],
-        "libraryName": "boj library"
-      },
-      "username": "boj",
-      "password": "$2a$12$jG6OCBNDtGPWkuKxzAqrKuvzabklRM9PMe5RemTAQdFFTp3teBl.a",
-      "userType": "CLIENT"
+  "usersList" : [ {
+    "userType" : "CLIENT",
+    "username" : "boj",
+    "password" : "$2a$12$jG6OCBNDtGPWkuKxzAqrKuvzabklRM9PMe5RemTAQdFFTp3teBl.a",
+    "library" : {
+      "id" : null,
+      "libraryList" : [ ],
+      "libraryName" : "boj library"
     },
-    {
-      "library": {
-        "libraryList": [],
-        "libraryName": "boj2 library"
-      },
-      "username": "boj2",
-      "password": "$2a$12$GHV9aymdAkQCAOse0Ku.pOvRKOhgzMtNMT9nD6XVuPEIYufjjONtG",
-      "userType": "CLIENT"
-    }
-  ]
-}
+    "enabled" : true

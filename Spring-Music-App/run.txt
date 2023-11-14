@@ -17,5 +17,5 @@ elif [ $mode == "spring" ]; then
     echo "Running Spring Boot Application..."
     mvn spring-boot:run
 else
-    echo "Invalid or unset app.run.mode. Please set it to 'console' or 'spring' in application.properties"
+    echo "Invalid or unset app.run.mode. Set it to 'console' or 'spring' in application.properties"
 fi

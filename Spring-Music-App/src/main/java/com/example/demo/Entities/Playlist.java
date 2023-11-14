@@ -2,6 +2,7 @@ package com.example.demo.Entities;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,9 @@ public class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long playlist_id;
+
+    @Column(nullable = false)
+    @NotEmpty(message = "Can not have empty strings")
     private String playlistName;
 
     @ManyToOne(cascade = CascadeType.ALL)

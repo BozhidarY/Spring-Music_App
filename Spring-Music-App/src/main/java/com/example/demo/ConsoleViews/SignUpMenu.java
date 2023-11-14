@@ -9,6 +9,7 @@ import com.example.demo.Entities.Users;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class SignUpMenu {
@@ -20,7 +21,7 @@ public class SignUpMenu {
         this.signMenuController = signMenuController;
     }
 
-    public void login() {
+    public void login() throws IOException {
         System.out.println("Login Form: ");
         System.out.println("Enter username");
         String username = scanner.nextLine();
@@ -44,7 +45,7 @@ public class SignUpMenu {
         }
     }
 
-    public void register() {
+    public void register() throws IOException {
         System.out.println("Register Form: ");
         System.out.println("Enter username");
         String username = scanner.nextLine();
@@ -52,20 +53,12 @@ public class SignUpMenu {
         String password = scanner.nextLine();
         String hashedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
 
-        if (!signMenuController.checkDublicateUser(username)) {
+        if (signMenuController.checkDublicateUser(username) != null) {
             System.out.println("Username is taken. Try again or go to login(Register/ Login)");
             String choice = scanner.nextLine();
             chooseSignInOption(choice);
         } else if (signMenuController.validateUserUsername(username) && signMenuController.validateUserPassword(password)) {
-            System.out.println("Both username and password dont match the regex. Try again or go to login(Register/ Login)");
-            String choice = scanner.nextLine();
-            chooseSignInOption(choice);
-        } else if (signMenuController.validateUserUsername(username)) {
-            System.out.println("Username doenst match the regex. Try again or go to login(Register/ Login)");
-            String choice = scanner.nextLine();
-            chooseSignInOption(choice);
-        } else if (signMenuController.validateUserPassword(password)) {
-            System.out.println("Password doenst match the regex. Try again or go to login(Register/ Login)");
+            System.out.println("Both username and password don't match the regex. Try again or go to login(Register/ Login)");
             String choice = scanner.nextLine();
             chooseSignInOption(choice);
         } else {
@@ -88,7 +81,7 @@ public class SignUpMenu {
         }
     }
 
-    public void chooseSignInOption(String choice) {
+    public void chooseSignInOption(String choice) throws IOException {
         if (choice.equals("Login")) {
             login();
         } else if (choice.equals("Register")) {

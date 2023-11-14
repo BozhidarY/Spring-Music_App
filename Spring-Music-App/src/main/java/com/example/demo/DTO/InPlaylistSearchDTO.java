@@ -1,18 +1,16 @@
 package com.example.demo.DTO;
 
-import com.example.demo.Entities.Playlist;
-
-public class PlaylistDTO {
+public class InPlaylistSearchDTO {
     private String playlistChoice;
     private String songChoice;
 
-    public PlaylistDTO(String playlistChoice, String songChoice)
+    public InPlaylistSearchDTO(String playlistChoice, String songChoice)
     {
         this.playlistChoice = playlistChoice;
         this.songChoice = songChoice;
     }
 
-    public PlaylistDTO(){
+    public InPlaylistSearchDTO(){
 
     }
 

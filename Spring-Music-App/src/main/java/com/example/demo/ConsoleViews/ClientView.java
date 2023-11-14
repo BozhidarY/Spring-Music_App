@@ -5,6 +5,7 @@ import com.example.demo.ConsoleControllers.ClientController;
 import com.example.demo.Entities.Playlist;
 import com.example.demo.Entities.Songs;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class ClientView implements ClientViewInterface {
         this.clientController = clientController;
     }
 
-    public void openClientCommunication() {
+    public void openClientCommunication() throws IOException {
 
         System.out.println("Welcome " + clientController.getClient().getUsername() + ". There re 3 modes to operate in this app.\nThe first mode is that" +
                 " you can listen to music. \nSecond one - change and add playlists to your library and \nthe third" +
@@ -179,7 +180,7 @@ public class ClientView implements ClientViewInterface {
         }
     }
 
-    public void deletePlaylistDialog() {
+    public void deletePlaylistDialog() throws IOException {
         System.out.println("Which playlist to delete");
         String playlistName = scanner.nextLine();
         Playlist playlist = clientController.deletePlaylist(playlistName);
@@ -194,7 +195,7 @@ public class ClientView implements ClientViewInterface {
         }
     }
 
-    public void addSongInPlaylistDialog(Playlist choosenPlaylist) {
+    public void addSongInPlaylistDialog(Playlist choosenPlaylist) throws IOException {
         System.out.println("Which song to add");
         String songChoice = scanner.nextLine();
         if (clientController.addSong(choosenPlaylist, songChoice)) {
@@ -208,7 +209,7 @@ public class ClientView implements ClientViewInterface {
         }
     }
 
-    public void deleteSongDialog(Playlist choosenPlaylist) {
+    public void deleteSongDialog(Playlist choosenPlaylist) throws IOException {
         System.out.println("Which song to delete");
         String songChoice = scanner.nextLine();
         if (!clientController.deleteSong(choosenPlaylist, songChoice)) {
@@ -222,7 +223,7 @@ public class ClientView implements ClientViewInterface {
         }
     }
 
-    public void importLibraryDialog() {
+    public void importLibraryDialog() throws IOException {
         System.out.println("Enter username");
         String username = scanner.nextLine();
         if (!clientController.importLibrary(username)) {

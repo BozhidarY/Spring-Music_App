@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -17,10 +21,14 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(name = "Users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class Users {
+public abstract class Users implements UserDetails {
 
     @Id
-    @Column(name = "username", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long user_id;
+
+    @Column(unique = true, nullable = false)
+    @NotEmpty(message = "Can not have empty strings")
     private String username;
 
     private String password;

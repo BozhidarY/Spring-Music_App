@@ -1,16 +1,16 @@
 package com.example.demo.DTO;
 
-public class ArtistChart {
+public class ArtistChartBodyDTO {
     private String artistName;
     private long totalViews;
 
 
-    public ArtistChart(String artistName, long totalViews) {
+    public ArtistChartBodyDTO(String artistName, long totalViews) {
         this.artistName = artistName;
         this.totalViews = totalViews;
     }
 
-    public ArtistChart(){
+    public ArtistChartBodyDTO(){
 
     }
 

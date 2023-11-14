@@ -1,13 +1,13 @@
 package com.example.demo.DTO;
 
-public class ChoiceDTO {
+public class NameSearchDTO {
     private String choice;
 
-    public ChoiceDTO(String choice) {
+    public NameSearchDTO(String choice) {
         this.choice = choice;
     }
 
-    public ChoiceDTO(){
+    public NameSearchDTO(){
 
     }
 
