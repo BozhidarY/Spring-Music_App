@@ -82,14 +82,14 @@ public class SignMenuController implements SignUpMenuInterface {
     public Client createClientUser(String username, String password) throws IOException {
         Client client = new Client(username, password);
         userDB.getUsersList().add(client);
-        lybraryProvider.saveObject(Constants.USERS_JSON_PATH, userDB);
+        libraryProvider.saveObject(Constants.USERS_JSON_PATH, userDB);
         return client;
     }
 
     public Artist createArtistUser(String username, String password) throws IOException {
         Artist artist = new Artist(username, password);
         userDB.getUsersList().add(artist);
-        lybraryProvider.saveObject(Constants.USERS_JSON_PATH, userDB);
+        libraryProvider.saveObject(Constants.USERS_JSON_PATH, userDB);
         return artist;
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ClientView implements ClientViewInterface {
+public class ClientView {
     Scanner scanner = new Scanner(System.in);
     SongRemainingTime songRemainingTime = new SongRemainingTime();
     private ClientController clientController;

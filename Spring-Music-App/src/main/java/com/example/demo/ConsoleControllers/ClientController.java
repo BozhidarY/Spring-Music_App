@@ -2,7 +2,6 @@ package com.example.demo.ConsoleControllers;
 
 import com.example.demo.Utils.Configuration;
 import com.example.demo.Databases.ConsoleFIleHandling.*;
-import com.example.demo.ConsoleViews.ClientViewInterface;
 import com.example.demo.Entities.*;
 import com.example.demo.Interfaces.ClientCommands;
 import com.example.demo.Utils.Constants;
@@ -18,7 +17,6 @@ public class ClientController implements ClientCommands {
     private Client client;
     private UserDB userDB;
     private SongDB songDB;
-    private ClientViewInterface clientViewInterface;
 
     Configuration config = new Configuration(Constants.APP_PROPERTIES);
     String dataLibraryChoice = config.getDataLibraryChoice();
@@ -38,9 +36,6 @@ public class ClientController implements ClientCommands {
         return userDB.getUsersList();
     }
 
-    public void setView(ClientViewInterface clientViewInterface) {
-        this.clientViewInterface = clientViewInterface;
-    }
 
     @Override
     public List<Songs> filterSongsBySubstring(String substring) {
