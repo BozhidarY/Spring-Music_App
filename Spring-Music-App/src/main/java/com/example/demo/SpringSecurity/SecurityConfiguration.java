@@ -30,6 +30,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 //import org.springframework.security.oauth2.jwt.JwtDecoder;
 //import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -62,16 +64,19 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(crsf -> crsf.disable())
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/client/**").hasAuthority("CLIENT");
-                    authorize.requestMatchers("/artist/**").hasAuthority("ARTIST");
-                    authorize.requestMatchers("/admin/**").hasAuthority("ADMIN");
                     authorize.requestMatchers("/register", "/login", "/loginToken").permitAll();
+                    authorize.requestMatchers("/client/**").hasRole("CLIENT");
+                    authorize.requestMatchers("/artist/**").hasRole("ARTIST");
+                    authorize.requestMatchers("/admin/**").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 });
-        return httpSecurity
-                .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .build();
+        httpSecurity
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+        httpSecurity
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        return httpSecurity.build();
     }
 
     @Bean
@@ -84,6 +89,16 @@ public class SecurityConfiguration {
         JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter(){
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("userType");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        return jwtConverter;
     }
 
 }
