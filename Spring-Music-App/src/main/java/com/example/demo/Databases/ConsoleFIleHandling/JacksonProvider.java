@@ -2,6 +2,8 @@ package com.example.demo.Databases.ConsoleFIleHandling;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.util.Scanner;
 
 public class JacksonProvider implements LoadSaveProvider {
 
+    private static final Logger logger = (Logger) LogManager.getLogger(JacksonProvider.class);
     Scanner scanner = new Scanner(System.in);
     ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -17,7 +20,7 @@ public class JacksonProvider implements LoadSaveProvider {
             return objectMapper.readValue(new File(filePath),tClass);
         } catch (IOException e) {
             System.out.println(e.getMessage());
-//            logger.error("Failed to load songs from file {}", filePath);
+            logger.error("Failed to load songs from file {}", filePath);
             filePath = scanner.nextLine();
             return loadObject(filePath, tClass);
         }
@@ -26,7 +29,7 @@ public class JacksonProvider implements LoadSaveProvider {
         try {
             objectMapper.writeValue(new File(filePath), object);
         } catch (IOException e) {
-//            logger.error("Failed to save in file {}", filePath);
+            logger.error("Failed to save in file {}", filePath);
             filePath = scanner.nextLine();
             saveObject(filePath, object);
         }

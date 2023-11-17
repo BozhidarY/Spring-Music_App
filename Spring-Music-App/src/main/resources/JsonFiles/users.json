@@ -1,11 +1,28 @@
 {
-  "usersList" : [ {
-    "userType" : "CLIENT",
-    "username" : "boj",
-    "password" : "$2a$12$jG6OCBNDtGPWkuKxzAqrKuvzabklRM9PMe5RemTAQdFFTp3teBl.a",
-    "library" : {
-      "id" : null,
-      "libraryList" : [ ],
-      "libraryName" : "boj library"
+  "usersList": [
+    {
+      "library": {
+        "libraryList": [],
+        "libraryName": "boj1 library"
+      },
+      "username": "boj1",
+      "password": "$2a$12$th7U7.LwRF54b4qy6Wwfa.hQY1V0EEUYsOoq4rDe28KRFQWR272r.",
+      "userType": "CLIENT"
     },
-    "enabled" : true
+    {
+      "library": {
+        "libraryList": [],
+        "libraryName": "boj2 library"
+      },
+      "username": "boj2",
+      "password": "$2a$12$9qDIHpIcLE48b4NshoyE1eyNCWjFw6GV7ocRAMfH2ZQVEGsw/RjR.",
+      "userType": "CLIENT"
+    },
+    {
+      "totalViews": 0,
+      "username": "boj3",
+      "password": "$2a$12$b3QnYGNUu0HvqY/IHbuWbuqcaVKY1estde/4KvdpuGCOasijBTaa6",
+      "userType": "ARTIST"
+    }
+  ]
+}

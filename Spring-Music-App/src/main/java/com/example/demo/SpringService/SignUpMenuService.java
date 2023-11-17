@@ -4,9 +4,11 @@ package com.example.demo.SpringService;
 import com.example.demo.DTO.LoginResponceDTO;
 import com.example.demo.Entities.Artist;
 import com.example.demo.Entities.Client;
+import com.example.demo.Entities.UserType;
 import com.example.demo.Entities.Users;
 import com.example.demo.Databases.SpringPostgreSQLRepos.UserRepository;
 import com.example.demo.Interfaces.SignUpMenuInterface;
+import com.nimbusds.jose.JOSEException;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -44,9 +48,9 @@ public class SignUpMenuService implements SignUpMenuInterface {
         return userRepository.findByUsername(username);
     }
     public Users createClientUser(String username, String password) {
-        Client client = new Client(username, password);
-        userRepository.save(client);
-        return client;
+        Set<UserType> roles = new HashSet<>();
+        roles.add(UserType.CLIENT);
+        return userRepository.save(new Client(username, password, roles));
     }
     public Users createArtistUser(String username, String password) {
         Artist artist = new Artist(username, password);
@@ -71,11 +75,14 @@ public class SignUpMenuService implements SignUpMenuInterface {
         return new ResponseEntity<>(redirectView, HttpStatus.OK);
     }
 
-    public LoginResponceDTO loginUser(String username, String password){
+    public LoginResponceDTO loginUser(String username, String password) throws JOSEException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username,password)
         );
+        Set<String> roles = new HashSet<>();
+        roles.add(userRepository.findByUsername(username).getUserType().getAuthority());
         String token = tokenService.generateJwt(authentication);
+//        String token = tokenService.generateJwtToken(username, roles, 3600000);
 
         return new LoginResponceDTO(userRepository.findByUsername(username), token);
     }

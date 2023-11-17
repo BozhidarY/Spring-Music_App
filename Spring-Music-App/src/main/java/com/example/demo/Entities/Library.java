@@ -16,7 +16,13 @@ public class Library {
     @Column(name = "id")
     private Long id;
 
-    @OneToMany(mappedBy = "library", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy = "library", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "library_playlist",
+            joinColumns = @JoinColumn(name = "library_id"),
+            inverseJoinColumns = @JoinColumn(name = "playlist_id")
+    )
     private List<Playlist> libraryList;
 
     @Column(nullable = false)

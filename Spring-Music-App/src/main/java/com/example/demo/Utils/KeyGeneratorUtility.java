@@ -18,7 +18,5 @@ public class KeyGeneratorUtility {
             throw new IllegalStateException();
         }
         return keyPair;
-
-
     }
 }

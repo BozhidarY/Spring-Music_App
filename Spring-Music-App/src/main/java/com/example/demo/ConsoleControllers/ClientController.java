@@ -102,7 +102,7 @@ public class ClientController implements ClientCommands {
     }
 
     @Override
-    public Playlist deletePlaylist(String playlistName) throws IOException {
+    public boolean deletePlaylist(String playlistName) throws IOException {
         Playlist deletedPlaylist = null;
         for (Playlist playlist : client.getLibrary().getLibraryList()) {
             if (playlistName.equals(playlist.getPlaylistName())) {
@@ -110,7 +110,7 @@ public class ClientController implements ClientCommands {
             }
         }
         libraryProvider.saveObject(Constants.SONG_JSON_PATH, userDB);
-        return deletedPlaylist;
+        return true;
 
     }
 

@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Set;
+
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "userType"
@@ -71,8 +73,10 @@ public abstract class Users implements UserDetails {
     @Override
     public String toString() {
         return "Users{" +
-                "username='" + username + '\'' +
+                "user_id=" + user_id +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", userType=" + userType +
                 '}';
     }
 }

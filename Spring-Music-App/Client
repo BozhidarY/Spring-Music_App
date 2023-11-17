@@ -1,0 +1,18 @@
+{
+  "usersList" : [ {
+    "userType" : "CLIENT",
+    "username" : "boj",
+    "password" : "$2a$12$e9URf4vO883Rs5oo2N5kn.NB3BQBLwXWv2EqrTIX.mClNp9O1lRWy",
+    "library" : {
+      "id" : null,
+      "libraryList" : [ ],
+      "libraryName" : "boj library"
+    }
+  }, {
+    "userType" : "ARTIST",
+    "username" : "singer1",
+    "password" : "$2a$12$9hmzMv.afbGGqz1w7YJLr.3ZY.xP7iVSE1FrJ1FBlHq3wtOsVGqfK",
+    "totalViews" : 0,
+    "enabled" : true,
+    "credentialsNonExpired" : true,
+    "accountNonExpired" : true

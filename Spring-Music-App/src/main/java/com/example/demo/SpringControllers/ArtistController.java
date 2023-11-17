@@ -31,6 +31,9 @@ public class ArtistController {
     @PostMapping("/{username}/dashboard/addsong")
     public ResponseEntity<?> listenDialog(@PathVariable String username, @RequestBody NameSearchDTO nameSearchDTO){
         Artist artist = artistService.getArtistByUsername(username);
+        if(artist == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No profile with that name");
+        }
         artistService.setArtist(artist);
 
         String newSongNameChoice = nameSearchDTO.getChoice();

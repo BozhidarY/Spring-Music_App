@@ -8,6 +8,7 @@ import com.example.demo.Entities.Client;
 import com.example.demo.Entities.UserType;
 import com.example.demo.Entities.Users;
 import com.example.demo.SpringService.SignUpMenuService;
+import com.nimbusds.jose.JOSEException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +70,7 @@ public class SignUpMenuController {
     }
 
     @PostMapping("/loginToken")
-    public LoginResponceDTO loginUser(@RequestBody LoginFormDTO loginFormDTO){
+    public LoginResponceDTO loginUser(@RequestBody LoginFormDTO loginFormDTO) throws JOSEException {
         return signUpMenuService.loginUser(loginFormDTO.getUsername(), loginFormDTO.getPassword());
     }
 }

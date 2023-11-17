@@ -153,8 +153,7 @@ public class ClientService implements ClientCommands {
     }
 
     @Override
-    public Playlist deletePlaylist(String playlistName) {
-        List<Playlist> removedPlaylists = new ArrayList<>();
+    public boolean deletePlaylist(String playlistName) {
         Playlist deletedPlaylist = null;
         for (Playlist playlist : client.getLibrary().getLibraryList()) {
             if (playlistName.equals(playlist.getPlaylistName())) {
@@ -162,11 +161,11 @@ public class ClientService implements ClientCommands {
             }
         }
         if (deletedPlaylist == null) {
-            return null;
-        } else {
-            playlistRepo.deleteById(deletedPlaylist.getPlaylist_id());
-            return deletedPlaylist;
+            return false;
         }
+        client.getLibrary().getLibraryList().remove(deletedPlaylist);
+        userRepository.save(client);
+        return true;
     }
 
     @Override

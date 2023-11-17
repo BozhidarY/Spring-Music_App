@@ -27,7 +27,7 @@ public interface ClientCommands {
 
     void addPlaylist(String playlistName) throws IOException;
 
-    Playlist deletePlaylist(String playlistName) throws IOException;
+    boolean deletePlaylist(String playlistName) throws IOException;
 
     boolean addSong(Playlist playlist, String songName) throws IOException;
 

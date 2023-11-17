@@ -14,9 +14,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,8 +33,12 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.Collection;
+
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
     private final RSAKeyProperties keys;
@@ -47,17 +56,34 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoAuthenticationProvider);
     }
+
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
+//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+//        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+//        // You might want to set the password encoder here if needed
+//         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+//        return daoAuthenticationProvider;
+//    }
+
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder builder, UserDetailsService userDetailsService) throws Exception {
+//        builder.authenticationProvider(authenticationProvider(userDetailsService));
+//        return builder.build();
+//    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(crsf -> crsf.disable())
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/register", "/login", "/loginToken").permitAll();
-                    authorize.requestMatchers("/client/**").hasRole("CLIENT");
-                    authorize.requestMatchers("/artist/**").hasRole("ARTIST");
-                    authorize.requestMatchers("/admin/**").hasRole("ADMIN");
+                    authorize.requestMatchers("/register", "/login", "/loginToken", "/admin/**").permitAll();
+//                    authorize.requestMatchers("/client/**").hasAnyRole("ANONYMOUS", "CLIENT");
+//                    authorize.requestMatchers("/client/").hasAuthority("CLIENT");
+//                    authorize.requestMatchers("/artist/").hasRole("ARTIST");
+//                    authorize.requestMatchers("/admin/").hasRole("ADMIN");
                     authorize.anyRequest().authenticated();
                 });
         httpSecurity
@@ -84,11 +110,18 @@ public class SecurityConfiguration {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("userType");
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
+//        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
         jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtConverter;
+
+//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+//        grantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
+//
+//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+//        return jwtAuthenticationConverter;
     }
 
 }

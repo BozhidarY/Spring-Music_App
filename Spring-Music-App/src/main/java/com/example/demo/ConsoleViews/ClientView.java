@@ -183,7 +183,8 @@ public class ClientView {
     public void deletePlaylistDialog() throws IOException {
         System.out.println("Which playlist to delete");
         String playlistName = scanner.nextLine();
-        Playlist playlist = clientController.deletePlaylist(playlistName);
+        Playlist playlist = null;
+        clientController.deletePlaylist(playlistName);
         if (playlist != null) {
             System.out.println("Playlist deleted");
         } else {

@@ -1,27 +1,36 @@
 package com.example.demo.SpringService;
 
 import com.example.demo.Databases.SpringPostgreSQLRepos.DeletedUsersRepo;
+import com.example.demo.Databases.SpringPostgreSQLRepos.LibraryRepo;
+import com.example.demo.Databases.SpringPostgreSQLRepos.PlaylistRepo;
 import com.example.demo.Databases.SpringPostgreSQLRepos.UserRepository;
+import com.example.demo.Entities.Client;
 import com.example.demo.Entities.Users;
 import com.example.demo.Interfaces.AdminCommands;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 @Service
 public class AdminService implements AdminCommands {
     private final UserRepository userRepository;
     private final DeletedUsersRepo deletedUsersRepo;
+    private LibraryRepo libraryRepo;
+    private PlaylistRepo playlistRepo;
     private HashMap<String, String> deletedUsers;
 
+    private AuthenticationManager authenticationManager;
+
     @Autowired
-    public AdminService(UserRepository userRepository, DeletedUsersRepo deletedUsersRepo, HashMap<String, String> deletedUsers) {
+    public AdminService(UserRepository userRepository, DeletedUsersRepo deletedUsersRepo, HashMap<String, String> deletedUsers, LibraryRepo libraryRepo, PlaylistRepo playlistRepo, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.deletedUsersRepo = deletedUsersRepo;
+        this.libraryRepo = libraryRepo;
+        this.playlistRepo = playlistRepo;
+        this.authenticationManager = authenticationManager;
         this.deletedUsers = new HashMap<>();
     }
 
@@ -35,9 +44,10 @@ public class AdminService implements AdminCommands {
 
     public boolean deleteUserAccount(String userName, String password) {
         Users user = userRepository.findByUsernameAndPassword(userName, password);
-        if(user != null) {
-            userRepository.delete(user);
-            deletedUsersRepo.save(user);
+        if(user != null && user instanceof Client client) {
+            userRepository.delete(client);
+            libraryRepo.delete(client.getLibrary());
+            playlistRepo.deleteAll(client.getLibrary().getLibraryList());
             return true;
         }
         return false;
